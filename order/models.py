@@ -24,10 +24,10 @@ class OrderItem(TimeStampModel):
     def __str__(self):
         return self.product.title
 
-    def set_total_price(self):
-        self.total_price = self.product.price * self.quantity
-        self.save()
-        return
+    # def set_total_price(self):
+    #     self.total_price = self.product.price * self.quantity
+    #     self.save()
+    #     return
 
 
 class Order(TimeStampModel):

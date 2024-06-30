@@ -22,7 +22,7 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
-class LikedPost(models.Model):
+class LikedBlog(models.Model):
     post = models.ForeignKey(Blog, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)

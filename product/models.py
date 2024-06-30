@@ -44,7 +44,7 @@ class Images(models.Model):
 
 
 class Feedback(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='feedback')
     blog = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
     body = models.CharField(max_length=150)
     star = models.IntegerField(default=0,
