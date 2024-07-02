@@ -2,8 +2,7 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    amount = models.DecimalField(max_digits=150, decimal_places=2)
-
+    image = models.ImageField(upload_to="categories/")
 
     def __str__(self):
         return self.name
@@ -20,7 +19,6 @@ class Tag(models.Model):
 
 class Type(models.Model):
     name = models.CharField(max_length=20)
-
 
     def __str__(self):
         return self.name

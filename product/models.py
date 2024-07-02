@@ -16,7 +16,6 @@ User = get_user_model()
 class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    quantity = models.PositiveIntegerField()
     teg = models.ManyToManyField(Tag)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     price = models.DecimalField(max_digits=20, decimal_places=2)
@@ -29,9 +28,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
 
 
 
@@ -54,23 +50,7 @@ class Feedback(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
 
-
-    def __str__(self):
-        try:
-            return f'{self.author.name} : {self.body[:30]}'
-        except:
-            return f'no author : {self.body[:30]}'
-
     class Meta:
         ordering = ['-created']
 
 
-class LikeProduct(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
-    star = models.IntegerField(default=0,
-                               validators=[MaxValueValidator(5), MinValueValidator(0)])
-
-    def __str__(self):
-        return self.comment
