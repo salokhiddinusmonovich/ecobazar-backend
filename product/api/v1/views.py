@@ -3,7 +3,9 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer
+
+from .permissions import IsOwner
+from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, CommentCreateSerializer
 from category.models import Category, Type, Tag, StockStatus, Color
 from ...models import Product, Feedback, Images
 
@@ -66,8 +68,22 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
 
 
+class FeedbackCreateAPIView(generics.CreateAPIView):
+    serializer_class = CommentCreateSerializer
+    queryset = Feedback.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class CommentDeleteAPIView(generics.DestroyAPIView):
+    queryset = Feedback.objects.all()
+    permission_classes = [IsOwner]
+    lookup_field = 'id'
 
 
+comment_delete = CommentDeleteAPIView.as_view()
+feedback_create = FeedbackCreateAPIView.as_view()
 product_detail = ProductDetailAPIView.as_view()
 prduct_by_category = ProductByCategory.as_view()
 category_list = CategoryListAPIView.as_view()

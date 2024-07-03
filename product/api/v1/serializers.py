@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from product.models import Product, Feedback, Images
 from category.models import Color, Category, StockStatus, Tag, Type
+from user.models import User
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +36,19 @@ class ImageSerializer(serializers.ModelSerializer):
 class FeedbackListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'author', 'star', 'body', 'products']
+        fields = ['id',  'star', 'body', 'products']
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['products', 'star', 'body']
+
+
+class FeedbackCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['star', 'body', 'products']
 
 
 class CategoryNameSerializer(serializers.ModelSerializer):
@@ -47,26 +61,20 @@ class CategoryNameSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategoryNameSerializer(read_only=True)
     images = serializers.SerializerMethodField()
-    comments = FeedbackListSerializer(many=True)
-
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['pk',
-                  'images',
-                  'title',
-                  'description',
-                  'price',
-                  'discount',
-                  'category',
-                  'type',
-                  'stock_status',
-                  'type',
-                  'comments'
-                  ]
+        fields = ['pk', 'title', 'description', 'price', 'discount', 'category', 'type', 'stock_status', 'comments', 'images']
 
     def get_images(self, obj):
         images = Images.objects.filter(product=obj)
-        serializers = ImageSerializer(images, many=True)
-        return serializers.data
+        serializer = ImageSerializer(images, many=True)
+        return serializer.data
+
+    def get_comments(self, obj):
+        feedback = Feedback.objects.filter(products=obj)
+        serializer = FeedbackListSerializer(feedback, many=True)
+        return serializer.data
+
 
