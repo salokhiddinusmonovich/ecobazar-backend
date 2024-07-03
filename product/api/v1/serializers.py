@@ -48,6 +48,11 @@ class FeedbackCreateSerializer(serializers.ModelSerializer):
         fields = ['star', 'body', 'products']
 
 
+class FeedbackUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['body', 'star']
+
 class CategoryNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category

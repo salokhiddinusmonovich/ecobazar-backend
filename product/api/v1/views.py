@@ -3,9 +3,10 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework import status
 from .permissions import IsOwner
-from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer
+from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer, \
+    FeedbackUpdateSerializer
 from category.models import Category, Type, Tag, StockStatus, Color
 from ...models import Product, Feedback, Images
 
@@ -76,16 +77,40 @@ class FeedbackCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({'message': 'Feedback created', 'data': response.data}, status=status.HTTP_201_CREATED)
+
+
 class CommentDeleteAPIView(generics.DestroyAPIView):
     queryset = Feedback.objects.all()
     permission_classes = [IsOwner]
-    lookup_field = 'id'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'message': 'Feedback deleted successfully'}, status=status.HTTP_200_OK)
+
+class FeedbackUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = FeedbackUpdateSerializer
+    queryset = Feedback.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response({'message': 'Feedback updated', 'data': serializer.data}, status=status.HTTP_200_OK)
 
 
-comment_delete = CommentDeleteAPIView.as_view()
+feedback_update = FeedbackUpdateAPIView().as_view()
+feedback_delete = CommentDeleteAPIView.as_view()
 feedback_create = FeedbackCreateAPIView.as_view()
 product_detail = ProductDetailAPIView.as_view()
-prduct_by_category = ProductByCategory.as_view()
+product_by_category = ProductByCategory.as_view()
 category_list = CategoryListAPIView.as_view()
 product_list = ProductListAPIView.as_view()
 
