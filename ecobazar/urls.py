@@ -25,7 +25,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
         title="Social Media API",
-        default_version='v0',
+        default_version='v1',
         description="Test description",
         license=openapi.License(name="MIT License"),
     ),
@@ -48,7 +48,9 @@ urlpatterns = [
 
 
 api_urls = [
-    path('api/v1/user/', include('user.api.v1.urls')),
+    path('api/user/', include('user.api.v1.urls')),
+    path('api/product/', include('product.api.v1.urls')),
+
 
 ]
 

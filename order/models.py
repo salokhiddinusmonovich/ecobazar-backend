@@ -17,6 +17,7 @@ class TimeStampModel(models.Model):
 class OrderItem(TimeStampModel):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
+    quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     ordered = models.BooleanField(default=False)
     order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name='orderitem')
