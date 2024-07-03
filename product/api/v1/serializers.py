@@ -34,15 +34,12 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class FeedbackListSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.username')
     class Meta:
         model = Feedback
-        fields = ['id',  'star', 'body', 'products']
+        fields = ['id',  'star', 'body', 'products', 'author']
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Feedback
-        fields = ['products', 'star', 'body']
 
 
 class FeedbackCreateSerializer(serializers.ModelSerializer):
@@ -62,6 +59,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategoryNameSerializer(read_only=True)
     images = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Product

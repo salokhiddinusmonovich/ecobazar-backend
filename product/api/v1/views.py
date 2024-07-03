@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .permissions import IsOwner
-from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, CommentCreateSerializer
+from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer
 from category.models import Category, Type, Tag, StockStatus, Color
 from ...models import Product, Feedback, Images
 
@@ -69,7 +69,7 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
 
 class FeedbackCreateAPIView(generics.CreateAPIView):
-    serializer_class = CommentCreateSerializer
+    serializer_class = FeedbackCreateSerializer
     queryset = Feedback.objects.all()
     permission_classes = (IsAuthenticated,)
 

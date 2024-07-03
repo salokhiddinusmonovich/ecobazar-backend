@@ -57,3 +57,22 @@ class ChangePasswordSerializer(serializers.Serializer):
         instance.set_password(validated_data['new_password'])
         instance.save()
         return instance
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "realname",
+            "phone_number",
+            "profile_image",
+            "location",
+            "bio"
+        )
+
+    def update(self, instance, validated_data):
+        if "profile_image" not in validated_data or not validated_data["profile_image"]:
+            validated_data["profile_image"] = instance.profile_image
+        return super().update(instance, validated_data)

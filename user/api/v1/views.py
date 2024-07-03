@@ -32,3 +32,5 @@ class ChangePasswordView(APIView):
 
 
 change_password = ChangePasswordView.as_view()
+
+
