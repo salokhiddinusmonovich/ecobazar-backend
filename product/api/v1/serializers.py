@@ -1,21 +1,20 @@
 from rest_framework import serializers
-from product.models import Product, Feedback, Images
+from product.models import Product, Feedback, Images, StarModels
 from category.models import Color, Category, StockStatus, Tag, Type
 from user.models import User
-
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['pk', 'image', 'name']
 
-
 class ProductSerializer(serializers.ModelSerializer):
     main_image = serializers.SerializerMethodField()
+    rating = serializers.CharField(source='rating.star')
+
     class Meta:
         model = Product
-        fields = ['pk', 'title', 'price', 'discount', 'main_image']
-
+        fields = ['pk', 'title', 'price', 'discount', 'main_image', 'rating']
 
     def get_main_image(self, obj):
         main_image = obj.images_set.first()
@@ -23,30 +22,27 @@ class ProductSerializer(serializers.ModelSerializer):
             return main_image.image.url
         return "No image"
 
-
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
         fields = ['pk', 'image']
 
-
-
-
+class ProductFilterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'description', 'price', 'category', 'teg']
 
 class FeedbackListSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.username')
+
     class Meta:
         model = Feedback
-        fields = ['id',  'star', 'body', 'products', 'author']
-
-
-
+        fields = ['id', 'star', 'body', 'products', 'author']
 
 class FeedbackCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['star', 'body', 'products']
-
 
 class FeedbackUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,17 +54,15 @@ class CategoryNameSerializer(serializers.ModelSerializer):
         model = Category
         fields = ['name']
 
-
-
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategoryNameSerializer(read_only=True)
     images = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
-
+    rating = serializers.CharField(source='rating.star')
 
     class Meta:
         model = Product
-        fields = ['pk', 'title', 'description', 'price', 'discount', 'category', 'type', 'stock_status', 'comments', 'images']
+        fields = ['pk', 'title', 'description', 'price', 'discount', 'category', 'type', 'stock_status', 'comments', 'images', 'rating']
 
     def get_images(self, obj):
         images = Images.objects.filter(product=obj)
@@ -79,5 +73,3 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         feedback = Feedback.objects.filter(products=obj)
         serializer = FeedbackListSerializer(feedback, many=True)
         return serializer.data
-
-
