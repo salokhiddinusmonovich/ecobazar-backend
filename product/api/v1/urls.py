@@ -7,7 +7,8 @@ from .views import (
     product_detail,
     feedback_create,
     feedback_delete,
-    feedback_update
+    feedback_update,
+    product_filter_list
 )
 
 app_name = 'product_app'
@@ -17,6 +18,7 @@ urlpatterns = [
     path('delete/feedback/<int:pk>/', feedback_delete, name='feedback_delete'),
     path('update/feedback/<int:pk>/', feedback_update, name='feedback_update'),
 
+    path('filter/products/', product_filter_list, name='product_filter_list'),
     path('categories/list/', category_list, name='categories-list'),
     path('products/list/', product_list, name='products_list'),
     path('products_by_category/<int:pk>/', product_by_category, name='products_by_category'),
