@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
-from category.models import Tag, Category, Type, Color, StockStatus
+from rest_framework.fields import ImageField
+
+from category.models import Tag, Type, Color, StockStatus
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -14,11 +16,19 @@ class StarModels(models.Model):
     def __str__(self):
         return str(self.star)
 
+
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(upload_to='product/categories/')
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     teg = models.ManyToManyField(Tag)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
+    category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, related_name='products')
     price = models.DecimalField(max_digits=20, decimal_places=2)
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='products')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, related_name='products')

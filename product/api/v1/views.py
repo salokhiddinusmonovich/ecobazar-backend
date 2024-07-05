@@ -4,17 +4,17 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .permissions import IsOwner
-from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer, FeedbackUpdateSerializer, ProductFilterSerializer
-from category.models import Category, Type, Tag, StockStatus, Color
-from product.models import Product, Feedback, Images, StarModels
+from .serializers import ProductCategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer, FeedbackUpdateSerializer, ProductFilterSerializer
+from category.models import Type, Tag, StockStatus, Color
+from product.models import Product, Feedback, Images, StarModels, ProductCategory
 from .filters import ProductFilter
 
-class CategoryListAPIView(generics.ListAPIView):
-    serializer_class = CategorySerializer
+class ProductCategoryListAPIView(generics.ListAPIView):
+    serializer_class = ProductCategorySerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
-        return Category.objects.all()
+        return ProductCategory.objects.all()
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -41,7 +41,7 @@ class ProductFilterListView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
-class ProductByCategory(generics.ListAPIView):
+class ProductByProductCategory(generics.ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -107,7 +107,7 @@ feedback_update = FeedbackUpdateAPIView.as_view()
 feedback_delete = CommentDeleteAPIView.as_view()
 feedback_create = FeedbackCreateAPIView.as_view()
 product_detail = ProductDetailAPIView.as_view()
-product_by_category = ProductByCategory.as_view()
-category_list = CategoryListAPIView.as_view()
+product_by_category = ProductByProductCategory.as_view()
+category_list = ProductCategoryListAPIView.as_view()
 product_list = ProductListAPIView.as_view()
 product_filter_list = ProductFilterListView.as_view()
