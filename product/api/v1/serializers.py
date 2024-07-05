@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from product.models import Product, Feedback, Images, StarModels
-from category.models import Color, Category, StockStatus, Tag, Type
+from category.models import Color, ProductCategory, StockStatus, Tag, Type
 from user.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = ProductCategory
         fields = ['pk', 'image', 'name']
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class FeedbackUpdateSerializer(serializers.ModelSerializer):
 
 class CategoryNameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = ProductCategory
         fields = ['name']
 
 class ProductDetailSerializer(serializers.ModelSerializer):

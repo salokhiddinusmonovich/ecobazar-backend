@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from .permissions import IsOwner
 from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer, FeedbackUpdateSerializer, ProductFilterSerializer
-from category.models import Category, Type, Tag, StockStatus, Color
+from category.models import ProductCategory, Type, Tag, StockStatus, Color
 from product.models import Product, Feedback, Images, StarModels
 from .filters import ProductFilter
 
@@ -14,7 +14,7 @@ class CategoryListAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
-        return Category.objects.all()
+        return ProductCategory.objects.all()
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
