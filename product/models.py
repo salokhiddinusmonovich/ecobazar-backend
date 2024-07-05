@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from category.models import Tag, Category, Type, Color, StockStatus
+from category.models import Tag, ProductCategory, Type, Color, StockStatus
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -18,7 +18,7 @@ class Product(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     teg = models.ManyToManyField(Tag)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
+    category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, related_name='products')
     price = models.DecimalField(max_digits=20, decimal_places=2)
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='products')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, related_name='products')
@@ -43,7 +43,7 @@ class Feedback(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='feedback')
     products = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
     body = models.CharField(max_length=150)
-    star = models.ForeignKey(StarModels, on_delete=models.CASCADE)  # исправлено здесь
+    star = models.ForeignKey(StarModels, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
