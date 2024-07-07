@@ -32,7 +32,7 @@ class Product(models.Model):
         return self.title
 
 class Images(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images_set')
     image = models.ImageField(upload_to='product/')
     is_main = models.BooleanField(default=False)
 

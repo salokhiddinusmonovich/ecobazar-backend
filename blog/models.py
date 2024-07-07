@@ -32,4 +32,6 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created']
 
+    def __str__(self):
+        return self.body
 
