@@ -9,6 +9,7 @@ from product.models import Product
 from .permissions import IsOrderOwner
 from .serializers import OrderSerializer
 from order.models import Order, OrderItem
+from rest_framework.views import APIView
 
 
 class CartByOwnerListAPIView(generics.ListAPIView):
@@ -22,77 +23,8 @@ class CartByOwnerListAPIView(generics.ListAPIView):
 
 
 
-@api_view(['POST'])
-@permission_classes([IsOrderOwner])
-def add_order(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    order, order_created = Order.objects.get_or_create(
-        customer=request.user,
-        ordered=False
-    )
 
 
-    try:
-        order_item, order_item_created = OrderItem.objects.get_or_create(
-            product=product,
-            customer=request.user,
-            ordered=False,
-            order=order
-
-        )
-    except IntegrityError:
-        order_item, order_item_created = OrderItem.objects.get_or_create(
-            product=product,
-            customer=request.user,
-            quantity=1,
-            ordered=False,
-            order=order
-
-        )
-    order_item.set_total_price()
-    if not order_item_created:
-        order_item.quantity += 1
-        order_item.save()
-        order_item.set_total_price()
-        return Response({'message': "It increased by one time"}, status=status.HTTP_201_CREATED)
-    return Response({'message': "It decreased by one time"}, status=status.HTTP_201_CREATED)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated, IsOrderOwner])
-def put_order(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    order, order_created = Order.objects.get_or_create(
-        customer=request.user,
-        ordered=False
-    )
-
-    try:
-        order_item, order_item_created = OrderItem.objects.get_or_create(
-            product=product,
-            customer=request.user,
-            ordered=False,
-            order=order
-
-        )
-    except IntegrityError:
-        order_item, order_item_created = OrderItem.objects.get_or_create(
-            product=product,
-            customer=request.user,
-            quantity=1,
-            ordered=False,
-            order=order
-
-        )
-    order_item.set_total_price()
-    if order_item.quantity > 1:
-        order_item.quantity -= 1
-        order_item.save()
-        order_item.set_total_price()
-        return Response({'message': "It increased by one time"}, status=status.HTTP_201_CREATED)
-    else:
-        order_item.delete()
-        return Response({'message': "It decreased by one time"}, status=status.HTTP_201_CREATED)
 
 
 cart = CartByOwnerListAPIView.as_view()

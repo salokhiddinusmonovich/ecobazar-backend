@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from product.models import Product, Feedback, Images, StarModels
 from category.models import Color, ProductCategory, StockStatus, Tag, Type
 from user.models import User
+from product.models import Product, Images, Feedback, StarModels
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     main_image = serializers.SerializerMethodField()
-    rating = serializers.CharField(source='rating.star')
+    rating = serializers.IntegerField(source='rating.star')
 
     class Meta:
         model = Product

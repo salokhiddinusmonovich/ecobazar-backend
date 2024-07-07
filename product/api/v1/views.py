@@ -18,7 +18,7 @@ class CategoryListAPIView(generics.ListAPIView):
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductFilterSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):

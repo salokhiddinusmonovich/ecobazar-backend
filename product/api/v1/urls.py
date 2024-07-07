@@ -11,7 +11,7 @@ from .views import (
     product_filter_list
 )
 
-app_name = 'product_app'
+app_name = 'product_api'
 
 urlpatterns = [
     path('create/feedback/', feedback_create, name='feedback-create'),
