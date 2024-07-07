@@ -20,6 +20,7 @@ class Product(models.Model):
     teg = models.ManyToManyField(Tag)
     category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, related_name='products')
     price = models.DecimalField(max_digits=20, decimal_places=2)
+    quantity = models.IntegerField(default=0)
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='products')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, related_name='products')
     stock_status = models.ForeignKey(StockStatus, on_delete=models.SET_NULL, null=True, related_name='products')
