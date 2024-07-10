@@ -18,14 +18,14 @@ from ...services import inc_or_dec
 class CartByOwnerListAPIView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOrderOwner]
 
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user)
 
 
 class AddOrderView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOrderOwner]
 
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -52,7 +52,6 @@ class AddOrderView(APIView):
 
 class RemoveOrderView(APIView):
     permission_classes = [IsOrderOwner]
-
     def post(self, request, pk):
         orderitem = get_object_or_404(OrderItem, pk=pk)
         order = Order.objects.filter(orderitem=orderitem, ordered=False).first()

@@ -1,3 +1,4 @@
+
 from rest_framework.permissions import BasePermission
 
 class IsOrderOwner(BasePermission):
@@ -5,4 +6,4 @@ class IsOrderOwner(BasePermission):
         return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        return obj.customer == request.user
+        return obj.seller == request.user
