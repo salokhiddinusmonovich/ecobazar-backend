@@ -38,8 +38,3 @@ class Color(models.Model):
         return self.name
 
 
-class StockStatus(models.Model):
-    numbers = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return str(self.numbers)

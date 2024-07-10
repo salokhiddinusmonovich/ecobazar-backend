@@ -14,7 +14,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['product_title', 'product_price', 'main_image',
+        fields = ['pk','product_title', 'product_price', 'main_image',
                   'quantity', 'total_price']
 
     def get_main_image(self, obj):
