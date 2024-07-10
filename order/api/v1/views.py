@@ -29,16 +29,20 @@ class AddOrderView(APIView):
 
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        self.check_object_permissions(self.request, product)
+
 
         if product.quantity <= 0:
             return Response({'message': "Product is not available"}, status=status.HTTP_200_OK)
 
         order, created = Order.objects.get_or_create(customer=request.user, ordered=False)
 
+        if created:
+            self.check_object_permissions(request, order)
+
         orderitem, item_created = OrderItem.objects.get_or_create(product=product, customer=request.user, ordered=False)
 
         if not item_created:
+            self.check_object_permissions(request, orderitem)
             orderitem.quantity = F('quantity') + 1
             orderitem.save()
         else:
@@ -56,7 +60,7 @@ class RemoveOrderView(APIView):
         orderitem = get_object_or_404(OrderItem, pk=pk)
         order = Order.objects.filter(orderitem=orderitem, ordered=False).first()
         self.check_object_permissions(self.request, orderitem)
-        orderitem.product.quantity = F('quantity') + F('orderitem.quantity')
+        orderitem.product.quantity = F('quantity') + orderitem.quantity
         orderitem.product.save()
         order.orderitem.remove(orderitem)
         orderitem.delete()
@@ -81,7 +85,7 @@ class OrderItemDecrementAPIView(APIView):
 
     def post(self, request, pk):
         orderitem = get_object_or_404(OrderItem, pk=pk)
-        self.check_object_permissions(self.request, orderitem)
+        self.check_object_permissions(request, orderitem)
         if orderitem.quantity == 1:
             orderitem.product.quantity = F('quantity') + 1
             orderitem.product.save()

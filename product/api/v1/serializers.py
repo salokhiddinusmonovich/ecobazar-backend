@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from category.models import Color, ProductCategory, StockStatus, Tag, Type
+from category.models import Color, ProductCategory, Tag, Type
 from user.models import User
 from product.models import Product, Images, Feedback, StarModels
 
@@ -28,9 +28,17 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ['pk', 'image']
 
 class ProductFilterSerializer(serializers.ModelSerializer):
+    main_image = serializers.SerializerMethodField()
     class Meta:
         model = Product
-        fields = ['id', 'title', 'description', 'price', 'category', 'teg']
+        fields = ['id', 'title', 'main_image','description', 'price', 'category', 'teg']
+
+    def get_main_image(self, obj):
+        main_image = obj.images_set.first()
+        if main_image and main_image.image:
+            return main_image.image.url
+        return "No image"
+
 
 class FeedbackListSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.username')
@@ -62,7 +70,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['pk', 'title', 'description', 'price', 'discount', 'category', 'type', 'stock_status', 'comments', 'images', 'rating']
+        fields = ['pk', 'title', 'description', 'price', 'discount', 'category', 'type', 'quantity', 'comments', 'images', 'rating']
 
     def get_images(self, obj):
         images = Images.objects.filter(product=obj)

@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from category.models import Tag, ProductCategory, Type, Color, StockStatus
+from category.models import Tag, ProductCategory, Type, Color
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -25,7 +25,6 @@ class Product(models.Model):
     quantity = models.IntegerField(default=0)
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, related_name='products')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, related_name='products')
-    stock_status = models.ForeignKey(StockStatus, on_delete=models.SET_NULL, null=True, related_name='products')
     discount = models.IntegerField(default=100)
     rating = models.ForeignKey(StarModels, on_delete=models.SET_NULL, null=True, related_name='products')
     weight = models.IntegerField()

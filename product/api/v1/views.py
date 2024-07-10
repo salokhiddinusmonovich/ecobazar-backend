@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from .permissions import IsOwner
 from .serializers import CategorySerializer, ProductSerializer, ProductDetailSerializer, FeedbackCreateSerializer, FeedbackUpdateSerializer, ProductFilterSerializer
-from category.models import ProductCategory, Type, Tag, StockStatus, Color
+from category.models import ProductCategory, Type, Tag,  Color
 from product.models import Product, Feedback, Images, StarModels
 from .filters import ProductFilter
 
@@ -18,7 +18,7 @@ class CategoryListAPIView(generics.ListAPIView):
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductFilterSerializer
+    serializer_class = ProductSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
@@ -39,6 +39,18 @@ class ProductFilterListView(generics.ListAPIView):
     serializer_class = ProductFilterSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+
+    def get_queryset(self):
+        main_image_subquery = Images.objects.filter(
+            product=OuterRef('pk'),
+            is_main=True
+        ).values('image')[:1]
+
+        products = Product.objects.annotate(
+            main_image=Subquery(main_image_subquery)
+        )
+
+        return products
 
 
 class ProductByCategory(generics.ListAPIView):
