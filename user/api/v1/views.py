@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import UserRegisterSerializer, ChangePasswordSerializer
+from .serializers import UserRegisterSerializer, ChangePasswordSerializer, UserSettingsSerializer
 
 User = get_user_model()
 
@@ -31,6 +31,15 @@ class ChangePasswordView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserSettingsView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSettingsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+user_settings = UserSettingsView.as_view()
 change_password = ChangePasswordView.as_view()
 
 

@@ -1,16 +1,25 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-
+from ...models import User
 from rest_framework import serializers
 
-User = get_user_model()
+Get_USER = get_user_model()
+
+
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_image']
+
+
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(max_length=20, write_only=True)
 
     class Meta:
-        model = User
+        model = Get_USER
         fields = ['email', 'username', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
@@ -24,7 +33,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, data):
-        user = User(
+        user = Get_USER(
             email=data['email'],
             username=data['username']
         )
@@ -61,7 +70,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Get_USER
         fields = (
             "id",
             "email",
