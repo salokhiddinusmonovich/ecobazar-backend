@@ -43,7 +43,7 @@ def verify_code(request):
         user.save()
         return Response({"message": "User successfully logged in"}, status=status.HTTP_200_OK)
 
-    return Response({"message": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST, s)
+    return Response({"message": "Invalid code"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 register = UserCreateAPIView.as_view()

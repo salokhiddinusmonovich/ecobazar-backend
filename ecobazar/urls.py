@@ -53,6 +53,7 @@ api_urls = [
     path('api/user/', include('user.api.v1.urls')),
     path('api/product/', include('product.api.v1.urls')),
     path('api/order/', include('order.api.v1.urls')),
+    path('api/blog/', include('blog.api.v1.urls'))
 
 
 ]
