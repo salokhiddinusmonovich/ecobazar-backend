@@ -8,29 +8,45 @@ from .serializers import CategorySerializer, ProductSerializer, ProductDetailSer
 from category.models import ProductCategory, Type, Tag,  Color
 from product.models import Product, Feedback, Images, StarModels
 from .filters import ProductFilter
+from django.core.cache import cache
 
 class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
-        return ProductCategory.objects.all()
+        category_list = cache.get('category_list') # noqa
+        if category_list is None:
+            category_list = ProductCategory.objects.all() # noqa
+            cache.set('category_list', category_list)
+        return category_list
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
+    # def get_queryset(self):
+    #     main_image_subquery = Images.objects.filter(
+    #         product=OuterRef('pk'),
+    #         is_main=True
+    #     ).values('image')[:1]
+    #
+    #     products = Product.objects.annotate(
+    #         main_image=Subquery(main_image_subquery)
+    #     )
+    #
+    #     return products
     def get_queryset(self):
-        main_image_subquery = Images.objects.filter(
-            product=OuterRef('pk'),
-            is_main=True
-        ).values('image')[:1]
-
-        products = Product.objects.annotate(
-            main_image=Subquery(main_image_subquery)
-        )
-
+        products = cache.get('product_list')
+        if products is None:
+            main_image_subquery = Images.objects.filter(
+                product=OuterRef('pk'),
+            ).values('image')[:1]
+            products = Product.objects.annotate(
+                main_image=Subquery(main_image_subquery)
+            )
+            cache.set('product_list', products)
         return products
 
 class ProductFilterListView(generics.ListAPIView):
